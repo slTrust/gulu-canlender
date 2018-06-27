@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        *{margin:0;padding:0;box-sizing: border-box;}
+        ul li,ol li{list-style: none;}
+        .clearfix::after{display: block;content:'';clear:both;}
+
+        /* 日期面板样式 */
+        .weekBox .dayBox{width:100%;}
+        .weekBox .weekTitle,.dayBox .dayContent{float:left;width:14.28%;min-height: 50px;}
+        .weekBox,.dayBox{line-height:50px;}
+        .weekBox{ background:#cff; text-align: center;}
+        .dayBox{}
+        .dayBox .dayContent{border-bottom:1px dashed #ccc;border-right:1px dashed #ccc; text-align: center;}
+        .dayBox .dayContent:nth-child(7n){border-right: none;}
+        .banDay{background: #e5e5e5; color:#ccc;}
+        .currentDay{background: #cff;}
+        .dayBox .dayContent .dayItem{text-align:left;display:inline-block;min-width:50px;background: transparent;background-position:20px 7px ;background-repeat: no-repeat;}
+        /* 完成 */
+        .dayBox .dayContent .dayItem.complete{background-image:url(./images/success.png); }
+        /* 计划 */
+        .dayBox .dayContent .dayItem.plan{background-image:url(./images/alert.png); }
+
+        /* 前一月 后一月 */
+       .topbar{text-align: center;padding:10px 0;}
+       .f-riqi-box{margin:0 auto;max-width:187px;}
+       .topbar .f-prev, .topbar .f-next{height:32px;width:32px;}
+       .topbar .f-prev, .topbar .f-next,.topbar .f-riqi{line-height: 32px;float:left;}
+       .topbar .f-prev{background:url(./images/prev.png)}
+       .topbar .f-next{float:right;background:url(./images/next.png)}
+       .topbar .f-riqi{text-align: center;min-width:120px;color:#0089e1;}
+    </style>
+</head>
+<body>
+    <script src="./js/jquery-1.8.3.min.js"></script>
+    <div style="width:90%;margin:0 auto;">
+        <div id="calender">
+            <div class="topbar">
+                <div class="f-riqi-box clearfix">
+                    <div id="prev" class="f-prev"></div>
+                    <div class="f-riqi">
+                        <div class="f-riqi-content"><span class="f-year">----</span>年<span class="f-month">-</span>月</div>
+                    </div>
+                    <div id="next" class="f-next"></div>
+                </div>
+            </div>
+            <div class="content">
+                <ol class="weekBox clearfix">
+                    <li class="weekTitle">周日</li>
+                    <li class="weekTitle">周一</li>
+                    <li class="weekTitle">周二</li>
+                    <li class="weekTitle">周三</li>
+                    <li class="weekTitle">周四</li>
+                    <li class="weekTitle">周五</li>
+                    <li class="weekTitle">周六</li>
+                </ol>
+                <ul class="dayBox clearfix">
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script>
+        // 保存当前日期
+        var constDate = new Date();
+        var constYear = constDate.getFullYear();
+        var constMonth = constDate.getMonth()+1;
+        var constDay = constDate.getDate();
+        var workList = null;
+        // 查询所有有的日期
+        setTimeout(function(){
+            // 查询日期列表
+            workList = [
+                    "2018-05-01",
+                    "2018-05-06",
+                    "2018-05-10",
+                    "2018-05-15",
+                    "2018-05-22",
+                    "2018-05-23",
+                    "2018-05-28",
+                    "2018-06-01",
+                    "2018-06-11",
+                    "2018-06-06",
+                    "2018-06-16",
+                    "2018-06-20",
+                    "2018-06-25",
+                    "2018-07-06",
+                    "2018-07-11",
+                    "2018-07-13",
+                    "2018-07-22"
+            ]
+            initDate(constYear,constMonth)
+            showDate(constYear,constMonth);
+        },1000)
+       
+
+
+        // 初始化默认日期
+        function initDate(yyyy,mm){
+            $('#calender .topbar .f-year').html(yyyy)
+            $('#calender .topbar .f-month').html(mm)
+        }
+        function showDate(yyyy,mm){
+                    var dd = new Date(parseInt(yyyy),parseInt(mm), 0);   //Wed Mar 31 00:00:00 UTC+0800 2010  
+                    var daysCount = dd.getDate();            //本月天数  
+                    // var mystr ="";//写入代码
+                    var icon = "";//图标代码
+                    var today = new Date().getDate(); //今天几号  21
+                    var monthstart = new Date(parseInt(yyyy)+"/"+parseInt(mm)+"/1").getDay()//本月1日周几  
+                    var lastMonth; //上一月天数
+                    var nextMounth//下一月天数
+                    if(  parseInt(mm) ==1 ){
+                        lastMonth = new Date(parseInt(yyyy)-1,parseInt(12), 0).getDate();
+                    }else{
+                        lastMonth = new Date(parseInt(yyyy),parseInt(mm)-1, 0).getDate();
+                    }
+                    if( parseInt(mm) ==12 ){
+                        nextMounth = new Date(parseInt(yyyy)+1,parseInt(1), 0).getDate();
+                    }else{
+                        nextMounth = new Date(parseInt(yyyy),parseInt(mm)+1, 0).getDate();
+                    }
+                    //计算上月空格数
+                    var template = '';
+                    var curDate = ''; // 隐藏在li里的日期用于判断
+                    var curYear = ''; // 循环时的年份
+                    var curMonth = '';// 循环时的月份
+                    var curDay = '';  // 循环时的天
+                    // 上月单元格
+                    for(j=monthstart;j>0;j--){
+                        curDay = lastMonth-j+1;
+                        if( mm == 1){//返回12月
+                            curYear = yyyy-1;
+                            curMonth = 12;
+                        }else{//上一月
+                            curYear = yyyy;
+                            curMonth = mm-1;
+                        }
+                        curDate = curYear+'-'+curMonth+'-'+curDay;
+                        template+='<li class="dayContent banDay" data-date='+curDate+'><span class="dayItem prevMonth">'+curDay+'</span></li>';
+                    }
+                    //本月单元格
+                    for(i=0;i<daysCount;i++){
+                        curDay = i+1;
+                        curDate = yyyy+'-'+mm+'-'+curDay;
+                        template+='<li class="dayContent" data-date='+curDate+'><span  class="dayItem currentMonth">'+curDay+'</span></li>';
+                    }
+                    //计算下月空格数
+                    for(k=0; k<42-(daysCount+monthstart);k++ ){//表格保持等高6行42个单元格
+                        curDay = k+1;
+                        curYear = yyyy;
+                        if( mm == 12){//返回12月
+                            curYear = yyyy+1;
+                            curMonth = 1;
+                           
+                        }else{//上一月
+                            curMonth = mm+1;
+                        }
+                        curDate = curYear+'-'+curMonth+'-'+curDay;
+                        template+='<li class="dayContent banDay" data-date='+curDate+'><span  class="dayItem nextMonth">'+curDay+'</span></li>';
+                    }
+
+                    $('#calender .dayBox').html(template)
+
+                    // 给当日加样式
+                    if( constYear == yyyy){
+                        if( constMonth == mm){
+                            var today = constDate.getDate();
+                            var lastNum = $("#calender .dayBox .prevMonth").length;
+                            $('#calender .dayBox .dayContent').eq(today+lastNum-1).addClass("currentDay");
+                        }
+                    }
+                    
+            }
+            // 猛点会出错是因为 时间写在 showDate里 这样每按一次就增加一个事件队列  
+           
+            $('#prev').on('click',function(){
+                var mm = parseInt($(".f-month").html());
+                var yy = parseInt($(".f-year").html());
+                var flg = false;
+                if(constYear===yy){
+                    if((constMonth-1)>=mm){
+                        flg = false;
+                    }else{
+                        flg = true;
+                    }
+                }else if((constYear-1)===yy){
+                    if(mm<12){
+                        flg = false;
+                    }else{
+                        flg = true;
+                    }
+                }
+                flg===true? prevMonth():0;
+            })
+            $('#next').on('click',function(){
+                var mm = parseInt($(".f-month").html());
+                var yy = parseInt($(".f-year").html());
+                var flg = false;
+                if(constYear===yy){
+                    if((constMonth+1)<=mm){
+                        flg = false;
+                    }else{
+                        flg = true;
+                    }
+                }else if((constYear+1)===yy){
+                    if(mm>1){
+                        flg = false;
+                    }else{
+                        flg = true;
+                    }
+                }
+                flg===true? nextMonth():0;
+            })
+
+
+            function prevMonth(){
+                var mm = parseInt($(".f-month").html());
+                var yy = parseInt($(".f-year").html());
+                if( mm == 1){//返回12月
+                    $(".f-year").html(yy-1);
+                    $(".f-month").html(12);
+                    showDate(yy-1,12);
+                }else{//上一月
+                    $(".f-month").html(mm-1);
+                    showDate(yy,mm-1);
+                }
+            }
+            function nextMonth(){
+                var mm = parseInt($(".f-month").html());
+                var yy = parseInt($(".f-year").html());
+                if( mm == 12){//返回12月
+                    $(".f-year").html(yy+1);
+                    $(".f-month").html(1);
+                    showDate(yy+1,1);
+                }else{//上一月
+                    $(".f-month").html(mm+1);
+                    showDate(yy,mm+1);
+                }
+            }
+
+            
+
+    </script>
+</body>
+</html>
+            

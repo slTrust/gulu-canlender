@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        *{margin:0;padding:0;box-sizing: border-box;}
+        ul li,ol li{list-style: none;}
+        .clearfix::after{display: block;content:'';clear:both;}
+        .weekBox .dayBox{
+            width:100%;
+        }
+        .weekBox .weekTitle,.dayBox .dayContent{
+            float:left;
+            width:14.28%;
+            min-height: 50px;
+        }
+        .weekBox,.dayBox{
+            line-height:50px;
+        }
+        .weekBox{ background:#cff; text-align: center;}
+        .dayBox{}
+        .dayBox .dayContent{border-bottom:1px dashed #ccc;border-right:1px dashed #ccc; text-align: center;}
+        .dayBox .dayContent:nth-child(7n){border-right: none;}
+        .banDay{background: #e5e5e5;}
+        .currentDay{background: #cff;}
+
+        .dayBox .dayContent .dayItem{text-align:left;display:inline-block;min-width:50px;background: transparent;background-position:20px 7px ;background-repeat: no-repeat;}
+
+        .dayBox .dayContent .dayItem.prev{background-image:url(./images/success.png); }
+        .dayBox .dayContent .dayItem.next{background-image:url(./images/alert.png); }
+    </style>
+</head>
+<body>
+    <script src="./js/jquery-1.8.3.min.js"></script>
+    <div style="width:90%;margin:0 auto;">
+        <div id="calender">
+            <div class="topbar">
+                <button id="prev">prev</button>
+                <button id="next">next</button>
+            </div>
+            <div class="content">
+                <ol class="weekBox clearfix">
+                    <li class="weekTitle">周日</li>
+                    <li class="weekTitle">周一</li>
+                    <li class="weekTitle">周二</li>
+                    <li class="weekTitle">周三</li>
+                    <li class="weekTitle">周四</li>
+                    <li class="weekTitle">周五</li>
+                    <li class="weekTitle">周六</li>
+                </ol>
+                <ul class="dayBox clearfix">
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                    <li class="dayContent"></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script>
+        showDate('2018','06');
+        function showDate(yyyy,mm){
+                    var dd = new Date(parseInt(yyyy),parseInt(mm), 0);   //Wed Mar 31 00:00:00 UTC+0800 2010  
+                    var daysCount = dd.getDate();            //本月天数  
+                    // var mystr ="";//写入代码
+                    var icon = "";//图标代码
+                    var today = new Date().getDate(); //今天几号  21
+                    var monthstart = new Date(parseInt(yyyy)+"/"+parseInt(mm)+"/1").getDay()//本月1日周几  
+                    var lastMonth; //上一月天数
+                    var nextMounth//下一月天数
+                    if(  parseInt(mm) ==1 ){
+                        lastMonth = new Date(parseInt(yyyy)-1,parseInt(12), 0).getDate();
+                    }else{
+                        lastMonth = new Date(parseInt(yyyy),parseInt(mm)-1, 0).getDate();
+                    }
+                    if( parseInt(mm) ==12 ){
+                        nextMounth = new Date(parseInt(yyyy)+1,parseInt(1), 0).getDate();
+                    }else{
+                        nextMounth = new Date(parseInt(yyyy),parseInt(mm)+1, 0).getDate();
+                    }
+                    //计算上月空格数
+                    var dayList = [];
+                    for(j=monthstart;j>0;j--){
+                        var prevContent = {day:lastMonth-j+1,className:'banDay'};
+                        dayList.push(prevContent)
+                    }
+                    //本月单元格
+                    for(i=0;i<daysCount;i++){
+                        var currentContent = {day:i+1,className:''};
+                        dayList.push(currentContent)
+                    }
+                    //计算下月空格数
+                    for(k=0; k<42-(daysCount+monthstart);k++ ){//表格保持等高6行42个单元格
+                        var nextContent = {day:k+1,className:'banDay'};
+                        dayList.push(nextContent)
+                    }
+                    // 给当日加样式
+                    var mydate = new Date();
+                    if( mydate.getFullYear() == yyyy){
+                        if( (mydate.getMonth()+1 ) == mm){
+                            var today = mydate.getDate();
+                            var lastNum = $(".f-lastMonth").length;
+                            $('#calender .dayBox .dayContent').eq(today+lastNum-1).addClass("currentDay");
+                        }
+                    }
+                    for(var i=0;i<dayList.length;i++){
+                        var oDiv = document.createElement('span')
+                        oDiv.className = 'dayItem next';
+                        oDiv.innerHTML = dayList[i]['day'];
+                        $('#calender .dayBox .dayContent').eq(i).html(oDiv).addClass(dayList[i]['className'])
+                    }
+                    $('#prev').on('click',function(){
+                        showDate('2018','05');
+                    })
+                    $('#next').on('click',function(){
+                        showDate('2018','07');
+                    })
+            }
+    </script>
+</body>
+</html>
